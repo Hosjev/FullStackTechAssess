@@ -14,7 +14,8 @@ The goal is **correctness and reasoning**, not overengineering.
 
 - Backend: ASP.NET Core Web API
 - ORM: EF Core (direct DbContext usage)
-- Database: PostgreSQL (Docker, seeded)
+- Database: PostgreSQL (Docker)
+- DB Seeding: Gated DbSeeder
 - Frontend: Angular + RxJS
 - Tests: scaffolded only (backend + frontend)
 
