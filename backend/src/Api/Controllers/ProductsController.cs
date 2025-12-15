@@ -40,4 +40,23 @@ public class ProductsController : ControllerBase
 
         return NoContent();
     }
+
+    // POST /api/products
+    [HttpPost]
+    public async Task<ActionResult<ProductDto>> Create(CreateProductDto dto)
+    {
+        var result = await _products.CreateAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+    }
+
+    // PUT /api/products
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ProductDto>> Update(Guid id, UpdateProductDto dto)
+    {
+        var result = await _products.UpdateAsync(id, dto);
+        if (result == null)
+            return NotFound();
+
+        return Ok(result);
+    }
 }

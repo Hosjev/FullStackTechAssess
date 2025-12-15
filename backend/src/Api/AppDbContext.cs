@@ -39,6 +39,12 @@ public class AppDbContext : DbContext
 
             entity.Property(e => e.UpdatedAt)
                 .HasColumnName("updated_at");
+
+            entity.Property(e => e.IsActive)
+                .HasColumnName("is_active");
+
+            entity.Property(e => e.Description)
+                .HasColumnName("description");
         });
 
         modelBuilder.Entity<Product>(entity =>
@@ -66,9 +72,12 @@ public class AppDbContext : DbContext
 
             entity.Property(e => e.UpdatedAt)
                 .HasColumnName("updated_at");
-                
+
             entity.Property(e => e.IsActive)
                 .HasColumnName("is_active");
+                
+            entity.Property(e => e.StockQuantity)
+                .HasColumnName("stock_quantity");
 
             entity.HasOne(e => e.Category)
                 .WithMany(c => c.Products)
