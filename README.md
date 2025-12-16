@@ -25,21 +25,36 @@ The goal is **correctness and reasoning**, not overengineering.
 
 - **Thin controllers**
   - Controllers handle HTTP concerns only
+  - Routing, status codes, and delegation
+  - No business logic
 - **Service layer present**
   - Business logic lives in Services
-- **Direct DbContext usage**
+  - Aggregation and derived queries centralized
+  - Keeps controllers simple and testable
+- **Single Responsibility and Dependency Inversion**
+  - Each service has a single, focused responsibility
+  - Controllers depend on interfaces, not implementations
+  - Enables substitution and future growth
+- **Direct DbContext vs Repository pattern**
   - No repository abstraction
+  - DbContext used directly in services
+  - Reduces complexity and avoids duplicating EF Core abstraction
 - **EF Core migrations**
-  - Applied at app startup via `db.Database.Migrate()`
-- **Database seeding**
-  - Performed by Postgres container on first startup (local dev)
-- **Auth**
-  - Scaffolded only (no implementation in beta)
+  - Schema owned by migrations
+  - Aligns with modern EF Core practices
+- **Index Strategy**
+  - Shared in backend README.md
+- **Complex Endpoint**
+  - Categories challenged looked more interesting in terms of query optimization
 - **Validation**
-  - Data Annotations for now
-  - Explicitly allowed to evolve later
-- **Testing**
-  - Projects scaffolded, implementations deferred
+  - Data Annotations used for request validation
+  - Simple and native to EF Core
+  - Explicitly designed to evolve later
+- **More Time Allowance**
+  - Deeper analysis of the domain and API optimization
+  - Better database strategy (reads/writes separated)
+  - API Pagination
+  - Tracing wrapper for workflows
 
 ---
 
@@ -72,4 +87,3 @@ Each subproject has its own README to preserve decisions.
 - No production infrastructure
 - No premature architectural patterns (Clean/Hex/Onion)
 - No auth implementation
-- No optimization beyond clarity
