@@ -60,44 +60,44 @@ public class CategoryService : ICategoryService
 
     // keep existing summary logic, but ensure IsActive is enforced
     public async Task<CategorySummaryDto?> GetSummaryAsync(Guid id)
-{
-    return await _db.Categories
-        .AsNoTracking()
-        .Where(c => c.Id == id && c.IsActive)
-        .Select(c => new CategorySummaryDto
-        {
-            CategoryId = c.Id,
-            CategoryName = c.Name,
-            CategoryDescription = c.Description,
-
-            TotalProducts = c.Products.Count(),
-            ActiveProducts = c.Products.Count(p => p.IsActive),
-
-            AveragePrice = Math.Round(
-                c.Products.Where(p => p.IsActive).Average(p => p.Price),
-                2
-            ),
-
-            TotalInventoryValue = Math.Round(
-                c.Products.Where(p => p.IsActive)
-                    .Sum(p => p.Price * p.StockQuantity),
-                2
-            ),
-
-            PriceRange = new PriceRangeDto
+    {
+        return await _db.Categories
+            .AsNoTracking()
+            .Where(c => c.Id == id && c.IsActive)
+            .Select(c => new CategorySummaryDto
             {
-                Min = c.Products
-                    .Where(p => p.IsActive)
-                    .Min(p => p.Price),
+                CategoryId = c.Id,
+                CategoryName = c.Name,
+                CategoryDescription = c.Description,
 
-                Max = c.Products
-                    .Where(p => p.IsActive)
-                    .Max(p => p.Price)
-            },
+                TotalProducts = c.Products.Count(),
+                ActiveProducts = c.Products.Count(p => p.IsActive),
 
-            OutOfStockCount = c.Products
-                .Count(p => p.IsActive && p.StockQuantity == 0)
-        })
-        .FirstOrDefaultAsync();
-}
+                AveragePrice = Math.Round(
+                    c.Products.Where(p => p.IsActive).Average(p => p.Price),
+                    2
+                ),
+
+                TotalInventoryValue = Math.Round(
+                    c.Products.Where(p => p.IsActive)
+                        .Sum(p => p.Price * p.StockQuantity),
+                    2
+                ),
+
+                PriceRange = new PriceRangeDto
+                {
+                    Min = c.Products
+                        .Where(p => p.IsActive)
+                        .Min(p => p.Price),
+
+                    Max = c.Products
+                        .Where(p => p.IsActive)
+                        .Max(p => p.Price)
+                },
+
+                OutOfStockCount = c.Products
+                    .Count(p => p.IsActive && p.StockQuantity == 0)
+            })
+            .FirstOrDefaultAsync();
+    }
 }

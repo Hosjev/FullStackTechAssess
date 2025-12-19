@@ -73,19 +73,41 @@ public class ProductService : IProductService
         };
 
         _db.Products.Add(product);
-        await _db.SaveChangesAsync();
+        await _db.SaveChangesAsync(); // < TX
 
-        return new ProductDto
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Price = product.Price,
-            Category = new CategoryDto
+        // Not ref'ing lazy loading (must do!)
+        // await _db.Entry(product)
+        //     .Reference(p => p.Category)
+        //     .LoadAsync();
+
+        // return new ProductDto
+        // {
+        //     Id = product.Id,
+        //     Name = product.Name,
+        //     Price = product.Price,
+        //     Category = new CategoryDto
+        //     {
+        //         Id = product.CategoryId,
+        //         Name = product.Category.Name
+        //     }
+        // };
+
+        return await _db.Products
+            .AsNoTracking()
+            .Where(p => p.Id == product.Id)
+            .Select(p => new ProductDto
             {
-                Id = product.CategoryId,
-                Name = product.Category.Name
-            }
-        };
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Category = new CategoryDto
+                {
+                    Id = p.Category.Id,
+                    Name = p.Category.Name
+                }
+            })
+            .FirstAsync();
+
     }
     public async Task<ProductDto?> UpdateAsync(Guid id, UpdateProductDto dto)
     {
@@ -103,16 +125,21 @@ public class ProductService : IProductService
 
         await _db.SaveChangesAsync();
 
-        return new ProductDto
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Price = product.Price,
-            Category = new CategoryDto
+        return await _db.Products
+            .AsNoTracking()
+            .Where(p => p.Id == product.Id)
+            .Select(p => new ProductDto
             {
-                Id = product.CategoryId,
-                Name = product.Category.Name
-            }
-        };
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Category = new CategoryDto
+                {
+                    Id = p.Category.Id,
+                    Name = p.Category.Name
+                }
+            })
+            .FirstAsync();
+
     }
 }
